@@ -1,0 +1,328 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <iomanip>
+#include <windows.h>
+using namespace std;
+
+void display(string name[], double price[], int size)
+{
+	if (size == 0)
+	{
+		cout << "the list is empty " << endl;
+	}
+	else
+	{
+		for (int i = 0; i < size; i++) {
+			cout << "Product: " << name[i] << " : " << price[i] << " L.E" << endl;  //loop to show the list
+		}
+	}
+}
+
+void additem(string name[],double price[], int capacity,int& size)
+{
+	int k;
+	cout << "enter number of items :";
+	cin >> k;
+	int temp = size;
+	size = size + k;          
+	if (size >= capacity)
+	{
+		cout << "no space" << endl;
+		size = temp;
+	}
+	else {
+		
+		for (int i = temp; i <size; i++) {
+			cout << "enter name of product :";       //loop to add item
+			cin >> name[i];
+			for (int j = 0; j < i; j++)
+			{
+				if (name[i] == name[j])     // if added dupplicated item
+				{
+					cout << "already exist" << endl;
+					i--;
+					break;
+				}
+			}
+			cout << "enter price :";
+			cin >> price[i];
+		}
+		
+	}
+}
+void del(string name[],double price[], int& size) {
+	cout << "Enter product name you want to delete : ";
+	string s;
+	cin >> s;
+	bool found = false;
+	for (int i = 0; i < size; i++)
+	{
+		if (name[i] == s)
+		{
+			found = true; 
+			for (int j = i; j < size; j++)      //loop to delete item
+			{
+				name[j] = name[j + 1];          
+				price[j] = price[j + 1];
+			}
+			break;
+		}
+	}
+	if (found)
+	{
+		cout << "deleted successfully" << endl;
+		size--;
+	}
+	else
+	{
+		cout << "item not found" << endl;
+	}
+
+}
+void editp(string name[], double price[], int size) {
+	string s;
+	cout << "enter name of product you want to edit : ";
+	cin >> s;
+	double Newprice;
+	bool found = false;
+	for (int i = 0; i < size; i++) {       //loop to edit product price
+		if (name[i] == s) {
+			found = true;   
+			cout << "enter new price : ";  
+			cin >> Newprice;
+			price[i] = Newprice;
+			break;
+
+		}
+		
+	}
+	if (!found)
+	{
+		cout << "item not found" << endl;
+	}
+}
+void addproduct(string name[], double price[], int size, string namec[], double pricec[], int& sizec,int capacity) {
+	string s;
+	cout << "enter name of product : ";
+	cin >> s;
+	int g;
+	bool found = false;
+	for (int i = 0; i < size; i++) {
+		if (s == name[i]) {
+			found = true;
+			cout << "enter the quantity of items ";
+			cin >> g;
+			int temp = sizec;
+			sizec = sizec + g;
+			if (sizec >= capacity)
+			{
+				cout << "cart is full"<<endl;      
+				sizec = temp;
+				break;
+			}
+			else
+			{
+				for (int j = temp; j < sizec; j++)   //loop to add product to cart
+				{
+					namec[j] = name[i];
+					pricec[j] = price[i];
+				}
+				break;
+			}
+		}
+	}
+	if (!found)
+	{
+		cout << "item not found" << endl;
+	}
+}
+void search(string name[],double price[],int size) {
+	string s;
+	cout << "enter name of product : ";
+	cin >> s;
+	bool found = false;
+	for (int i = 0; i < size; i++) {
+		if (s == name[i]) {
+			found = true;
+			cout << "Product: " << name[i] << " : " << price[i] << " L.E" << endl;   //loop to search for item
+			break;
+
+		}
+	}
+	if (!found) {
+		cout << "item not found" << endl;
+	}
+}
+
+void read(string name[],double price[],int& size,string namec[],double pricec[],int& sizec)   //to read file
+{
+	ifstream f1("text.txt");
+	f1 >> size;
+	for (int i = 0; i < size; i++)
+	{
+		f1 >> name[i];
+		f1 >> price[i];	
+	}
+	f1 >> sizec;
+	for (int i = 0; i < sizec; i++) {
+		f1 >> namec[i];
+		f1 >> pricec[i];
+
+	}
+	f1.close();
+}
+void write(string name[], double price[], int size,string namec[],double pricec[],int sizec)  //to write in file
+{
+	ofstream f1("text.txt");
+	f1 << size << endl;
+	for (int i = 0; i < size; i++)
+	{
+		f1 << name[i];
+		f1 << "  ";
+		f1 << price[i] << "   ";
+	}
+	f1 << sizec << "  ";
+	for (int i = 0; i < sizec; i++) {
+		f1 << namec[i];
+		f1 << "  ";
+		f1 << pricec[i] << "  ";
+	}
+
+	f1.close();
+}
+
+int main()
+{
+	string name[100];
+	double price[100];
+	string namec[100];
+	double pricec[100];
+	int size = 0;
+	int sizec = 0;
+	int capacity = 100;
+	double sum = 0;
+	read(name, price, size,namec,pricec,sizec);
+	cout << " Super market  \n";
+	system("Color F3");
+	cout << "   1) admin\n";
+	cout << "   2) cutomer\n";
+	int z;
+	cout << "Select option : ";
+	cin >> z;
+	
+		switch (z) {
+		case 1: {
+			cout << "0)to exit" << endl;
+			cout << "1) Preview list\n";   //done
+			cout << "2) Create product \n";  //done
+			cout << "3) delete product \n";  //done
+			cout << "4) Edit product price\n";  //done 
+			int x;
+			cout << "Select option\n";
+			cin >> x;
+			while (x != 0)
+			{
+				switch (x) {
+				case 1: {
+					display(name, price, size);
+					break;
+				}
+				case 2: {
+					additem(name, price, capacity, size);
+					break;
+				}
+				case 3: {
+					del(name, price, size);
+					break;
+				}
+				case 4: {
+					editp(name, price, size);
+					break;
+				}
+				default: {
+					cout << "enter valid number\n";
+					break;
+				}
+
+				}
+				cout << "0)to exit\n";
+				cout << "1) Preview list\n";
+				cout << "2) Create product \n";
+				cout << "3) delete product\n";
+				cout << "4) Edit price\n";
+				cout << "Select option\n";
+				cin >> x;
+			}
+			break;
+		}
+		case 2: {
+			cout << "0)to exit\n";
+			cout << "1) Preview list of product\n"; //done
+			cout << "2) add product to your cart\n";//done
+			cout << "3) Preview product in cart\n";//done
+			cout << "4) search a product from list of product\n";//done
+			cout << "5) search for a product in the cart\n";//done
+			cout << "6) calculate total price for products\n"; //done
+			int f;
+			cin >> f;
+			while (f != 0)
+			{
+				switch (f) {
+				case 1: {
+					display(name, price, size);
+					break;
+				}
+				case 2: {
+					addproduct(name, price, size, namec, pricec, sizec, capacity);
+					break;
+				}
+				case 3: {
+					display(namec, pricec, sizec);
+					break;
+				}
+				case 4: {
+					search(name, price, size);
+					break;
+				}
+				case 5: {
+					search(namec, pricec, sizec);
+					break;
+				}
+				case 6: {
+					for (int i = 0; i < sizec; i++) {
+						sum = pricec[i] + sum;
+					}
+					cout << "Total of products price in cart : " << sum << "L.E" << endl;
+					break;
+				}
+				default: {
+					cout << "enter valid number\n";
+					break;
+				}
+				}
+				cout << "0)to exit\n";
+				cout << "1) Preview list of product\n"; 
+				cout << "2) add product to your cart\n";
+				cout << "3) Preview product in cart\n";
+				cout << "4) search a product from list of product\n";
+				cout << "5) search for a product in the cart\n";
+				cout << "6) calculate total price for products\n";
+				cin >> f;
+			}
+			break;
+
+
+
+		}
+		default: {
+			cout << "enter valid number\n";
+			break;
+		}
+
+
+		}
+		
+	
+	write(name, price, size,namec,pricec,sizec);
+}
